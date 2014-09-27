@@ -1,0 +1,7 @@
+language: scala
+
+script:
+  - rm appengine.sbt
+  - rm project/appengine.sbt
+  - sbt test
+
