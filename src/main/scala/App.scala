@@ -15,6 +15,12 @@ final class App extends unfiltered.filter.Plan {
         case init :+ "svg" =>
           val latest = App.latestVersion(baseUrl, org, init.mkString("."))
           App.view(latest, label)
+        case init :+ "md" =>
+          val n = init.mkString(".")
+          val base = s"http://javadoc-badge.appspot.com/$org/$n"
+          Ok ~> ResponseString(
+            s"""[![$label](${base}.svg?label=$label)]($base)"""
+          )
         case _ =>
           App.latestVersion(baseUrl, org, name) match {
             case Some(version) =>
