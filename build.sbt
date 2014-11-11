@@ -4,7 +4,7 @@ name := "javadoc-badge"
 
 licenses += ("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php"))
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.4"
 
 libraryDependencies ++= (
   ("net.databinder" %% "unfiltered-filter" % "0.8.2") ::
