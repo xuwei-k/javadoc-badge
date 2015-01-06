@@ -1,5 +1,6 @@
 package javadoc_badge
 
+import org.joda.time.DateTime
 import unfiltered.request._
 import unfiltered.response._
 import scala.util.control.NonFatal
@@ -51,7 +52,16 @@ object App {
         Ok ~> SVG(notFound(label))
     }
 
-  private def latestVersion(baseUrl: String, org: String, name: String): Option[String] =
+  private final case class CacheKey(baseUrl: String, org: String, name: String)
+
+  private[this] val cache = Cache.create[CacheKey, String](1024)
+
+  private def latestVersion(baseUrl: String, org: String, name: String): Option[String] = {
+    val key = CacheKey(baseUrl, org, name)
+    cache.getOrElseUpdate(key, latestVersion0(baseUrl, org, name), DateTime.now.plusMinutes(10))
+  }
+
+  private[this] def latestVersion0(baseUrl: String, org: String, name: String): Option[String] =
     try {
       val url = s"$baseUrl/${org.replace('.', '/')}/$name/maven-metadata.xml"
       (XML.load(url) \ "versioning" \ "latest").headOption.map(_.text)
