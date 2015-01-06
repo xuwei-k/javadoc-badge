@@ -9,6 +9,10 @@ import scala.xml.XML
 final class App extends unfiltered.filter.Plan {
 
   def intent = {
+    case GET(Path(Seg(Nil))) =>
+      Ok ~> Html5(
+        <p><a href="https://github.com/xuwei-k/javadoc-badge">https://github.com/xuwei-k/javadoc-badge</a></p>
+      )
     case GET(Path(Seg(org :: name :: Nil)) & Params(p)) =>
       val label = App.param(p, "label").getOrElse("javadoc")
       val baseUrl = App.param(p, "base").getOrElse("https://oss.sonatype.org/content/repositories/releases/")
