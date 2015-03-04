@@ -12,7 +12,7 @@ scalaVersion := "2.11.6"
 libraryDependencies ++= (
   ("net.databinder" %% "unfiltered-filter" % "0.8.1") ::
   ("javax.servlet" % "servlet-api" % "2.3" % "provided") ::
-  ("joda-time" % "joda-time" % "2.6") ::
+  ("joda-time" % "joda-time" % "2.7") ::
   ("org.joda" % "joda-convert" % "1.2") ::
   Nil
 )
