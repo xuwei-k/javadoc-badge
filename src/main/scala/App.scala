@@ -19,7 +19,7 @@ final class App extends unfiltered.filter.Plan {
       name.split('.').toSeq match {
         case init :+ "svg" =>
           val latest = App.latestVersion(baseUrl, org, init.mkString("."))
-          App.view(latest, label) ~> App.NoCacheHeader
+          App.NoCacheHeader ~> App.view(latest, label)
         case init :+ "md" =>
           val n = init.mkString(".")
           val base = s"http://javadoc-badge.appspot.com/$org/$n"
@@ -42,7 +42,7 @@ final case class SVG(nodes: scala.xml.NodeSeq) extends
   ComposeResponse(CharContentType("image/svg+xml") ~> ResponseString(nodes.toString))
 
 object App {
-  private val NoCacheHeader = CacheControl("no-cache,no-store,must-revalidate") ~> Pragma("no-cache")
+  private val NoCacheHeader = CacheControl("no-cache,no-store,must-revalidate,private") ~> Pragma("no-cache")
 
   private def javadocUrl(org: String, name: String, version: String): String =
     s"https://oss.sonatype.org/service/local/repositories/releases/archive/${org.replace('.', '/')}/$name/$version/$name-$version-javadoc.jar/!/index.html"
