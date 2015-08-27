@@ -81,17 +81,17 @@ object App {
 
   // TODO calculate the width from character count
   private def svg(label: String, version: String) = {
-    <svg xmlns="http://www.w3.org/2000/svg" width="131" height="18">
+    <svg xmlns="http://www.w3.org/2000/svg" width="131" height="20">
       <linearGradient id="a" x2="0" y2="100%">
         <stop offset="0" stop-color="#fff" stop-opacity=".7"/>
         <stop offset=".1" stop-color="#aaa" stop-opacity=".1"/>
         <stop offset=".9" stop-opacity=".3"/>
         <stop offset="1" stop-opacity=".5"/>
       </linearGradient>
-      <rect rx="4" width="131" height="18" fill="#555"/>
-      <rect rx="4" x="92" width="39" height="18" fill="#4c1"/>
+      <rect rx="4" width="131" height="20" fill="#555"/>
+      <rect rx="4" x="92" width="39" height="20" fill="#4c1"/>
       <path fill="#4c1" d="M92 0h4v18h-4z"/>
-      <rect rx="4" width="131" height="18" fill="url(#a)"/>
+      <rect rx="4" width="131" height="20" fill="url(#a)"/>
       <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
         <text x="47" y="14" fill="#010101" fill-opacity=".3">{label}</text>
         <text x="47" y="13">{label}</text>
@@ -102,17 +102,17 @@ object App {
   }
 
   private def notFound(label: String) =
-    <svg xmlns="http://www.w3.org/2000/svg" width="153" height="18">
+    <svg xmlns="http://www.w3.org/2000/svg" width="153" height="20">
       <linearGradient id="a" x2="0" y2="100%">
         <stop offset="0" stop-color="#fff" stop-opacity=".7"/>
         <stop offset=".1" stop-color="#aaa" stop-opacity=".1"/>
         <stop offset=".9" stop-opacity=".3"/>
         <stop offset="1" stop-opacity=".5"/>
       </linearGradient>
-      <rect rx="4" width="153" height="18" fill="#555"/>
-      <rect rx="4" x="92" width="61" height="18" fill="#9f9f9f"/>
+      <rect rx="4" width="153" height="20" fill="#555"/>
+      <rect rx="4" x="92" width="61" height="20" fill="#9f9f9f"/>
       <path fill="#9f9f9f" d="M92 0h4v18h-4z"/>
-      <rect rx="4" width="153" height="18" fill="url(#a)"/>
+      <rect rx="4" width="153" height="20" fill="url(#a)"/>
       <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
         <text x="47" y="14" fill="#010101" fill-opacity=".3">{label}</text>
         <text x="47" y="13">{label}</text>
