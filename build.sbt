@@ -35,3 +35,5 @@ scalacOptions ++= (
 Seq(Compile, Test).flatMap(c =>
   scalacOptions in (c, console) ~= {_.filterNot(unusedWarnings.toSet)}
 )
+
+fullResolvers ~= {_.filterNot(_.name == "jcenter")}
