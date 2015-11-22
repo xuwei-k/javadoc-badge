@@ -18,8 +18,9 @@ final class App extends unfiltered.filter.Plan {
       val baseUrl = App.param(p, "base").getOrElse("https://oss.sonatype.org/content/repositories/releases/")
       name.split('.').toSeq match {
         case init :+ "svg" =>
+          val classic = App.param(p, "style").map(_ == "classic").getOrElse(false)
           val latest = App.latestVersion(baseUrl, org, init.mkString("."))
-          App.NoCacheHeader ~> App.view(latest, label)
+          App.NoCacheHeader ~> App.view(latest, label, classic)
         case init :+ "md" =>
           val n = init.mkString(".")
           val base = s"http://javadoc-badge.appspot.com/$org/$n"
@@ -50,10 +51,10 @@ object App {
   private def param(params: Params.Map, key: String): Option[String] =
     params.get(key).toList.flatten.find(_.trim.nonEmpty)
 
-  private def view(latest: Option[String], label: String) =
+  private def view(latest: Option[String], label: String, classic: Boolean) =
     latest match {
       case Some(version) =>
-        Ok ~> SVG(svg(label, version))
+        Ok ~> SVG(svg(label, version, classic))
       case None =>
         Ok ~> SVG(notFound(label))
     }
@@ -79,31 +80,55 @@ object App {
         None
     }
 
-  private def svg(label: String, version: String) = {
+  private def svg(label: String, version: String, classic: Boolean) = {
     val width1 = (label.length * 8)
-    val width2 = (version.length * 8)
+    val width2 = ((version.length + 1) * 8)
     val width = width1 + width2
     val w = width.toString
     val n1 = (width1 / 2).toString
     val n2 = (width1 + (width2 / 2)).toString
-    <svg xmlns="http://www.w3.org/2000/svg" width={w} height="20">
-      <linearGradient id="a" x2="0" y2="100%">
-        <stop offset="0" stop-color="#fff" stop-opacity=".7"/>
-        <stop offset=".1" stop-color="#aaa" stop-opacity=".1"/>
-        <stop offset=".9" stop-opacity=".3"/>
-        <stop offset="1" stop-opacity=".5"/>
-      </linearGradient>
-      <rect rx="4" width={w} height="20" fill="#555"/>
-      <rect rx="4" x={width1.toString} width={width2.toString} height="20" fill="#4c1"/>
-      <path fill="#4c1" d={"M" + width1.toString + " 0h4v18h-4z"} />
-      <rect rx="4" width={w} height="20" fill="url(#a)"/>
-      <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
-        <text x={n1} y="14" fill="#010101" fill-opacity=".3">{label}</text>
-        <text x={n1} y="13">{label}</text>
-        <text x={n2} y="14" fill="#010101" fill-opacity=".3">{version}</text>
-        <text x={n2} y="13">{version}</text>
-      </g>
-    </svg>
+
+    if(classic) {
+      <svg xmlns="http://www.w3.org/2000/svg" width={w} height="20">
+        <linearGradient id="a" x2="0" y2="100%">
+          <stop offset="0" stop-color="#fff" stop-opacity=".7"/>
+          <stop offset=".1" stop-color="#aaa" stop-opacity=".1"/>
+          <stop offset=".9" stop-opacity=".3"/>
+          <stop offset="1" stop-opacity=".5"/>
+        </linearGradient>
+        <rect rx="4" width={w} height="20" fill="#555"/>
+        <rect rx="4" x={width1.toString} width={width2.toString} height="20" fill="#4c1"/>
+        <path fill="#4c1" d={"M" + width1.toString + " 0h4v18h-4z"} />
+        <rect rx="4" width={w} height="20" fill="url(#a)"/>
+        <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+          <text x={n1} y="14" fill="#010101" fill-opacity=".3">{label}</text>
+          <text x={n1} y="13">{label}</text>
+          <text x={n2} y="14" fill="#010101" fill-opacity=".3">{version}</text>
+          <text x={n2} y="13">{version}</text>
+        </g>
+      </svg>
+    } else {
+      <svg xmlns="http://www.w3.org/2000/svg" width={w} height="20">
+        <linearGradient id="b" x2="0" y2="100%">
+          <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+          <stop offset="1" stop-opacity=".1"/>
+        </linearGradient>
+        <mask id="a">
+          <rect width={w} height="20" rx="3" fill="#fff"/>
+        </mask>
+        <g mask="url(#a)">
+          <path fill="#555" d={"M0 0h" + width1 + "v20H0z"}/>
+          <path fill="#4c1" d={"M" + width1 + " 0h" + width2 + "v20H" + width1 + "z"}/>
+          <path fill="url(#b)" d="M0 0h161v20H0z"/>
+        </g>
+        <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+          <text x={n1} y="15" fill="#010101" fill-opacity=".3">{label}</text>
+          <text x={n1} y="14">{label}</text>
+          <text x={n2} y="15" fill="#010101" fill-opacity=".3">{version}</text>
+          <text x={n2} y="14">{version}</text>
+        </g>
+      </svg>
+    }
   }
 
   private def notFound(label: String) =
