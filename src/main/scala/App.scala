@@ -13,7 +13,7 @@ final class App extends unfiltered.filter.Plan {
       Ok ~> Html5(
         <p><a href="https://github.com/xuwei-k/javadoc-badge">https://github.com/xuwei-k/javadoc-badge</a></p>
       )
-    case GET(Path(Seg(org :: name :: Nil)) & Params(p)) =>
+    case GET(Path(Seg(org :: name :: path)) & Params(p)) =>
       val label = App.param(p, "label").getOrElse("javadoc")
       val baseUrl = App.param(p, "base").getOrElse("https://oss.sonatype.org/content/repositories/releases/")
       name.split('.').toSeq match {
@@ -24,13 +24,19 @@ final class App extends unfiltered.filter.Plan {
         case init :+ "md" =>
           val n = init.mkString(".")
           val base = s"http://javadoc-badge.appspot.com/$org/$n"
+          val redirect = if(path == Nil) {
+            base
+          } else {
+            base + "/" + path.mkString("/")
+          }
           Ok ~> ResponseString(
-            s"""[![$label](${base}.svg?label=$label)]($base)"""
+            s"""[![$label](${base}.svg?label=$label)]($redirect)"""
           )
         case _ =>
           App.latestVersion(baseUrl, org, name) match {
             case Some(version) =>
-              Redirect(App.javadocUrl(org, name, version))
+              val p = if(path == Nil) "index.html" else path.mkString("/")
+              Redirect(App.javadocUrl(org, name, version, p))
             case None =>
               NotFound ~> ResponseString("not found")
           }
@@ -45,8 +51,8 @@ final case class SVG(nodes: scala.xml.NodeSeq) extends
 object App {
   private val NoCacheHeader = CacheControl("no-cache,no-store,must-revalidate,private") ~> Pragma("no-cache")
 
-  private def javadocUrl(org: String, name: String, version: String): String =
-    s"https://oss.sonatype.org/service/local/repositories/releases/archive/${org.replace('.', '/')}/$name/$version/$name-$version-javadoc.jar/!/index.html"
+  private def javadocUrl(org: String, name: String, version: String, path: String): String =
+    s"https://oss.sonatype.org/service/local/repositories/releases/archive/${org.replace('.', '/')}/$name/$version/$name-$version-javadoc.jar/!/$path"
 
   private def param(params: Params.Map, key: String): Option[String] =
     params.get(key).toList.flatten.find(_.trim.nonEmpty)
