@@ -3,8 +3,10 @@ package javadoc_badge
 import org.joda.time.DateTime
 import unfiltered.request._
 import unfiltered.response._
+
 import scala.util.control.NonFatal
-import scala.xml.XML
+import scala.xml.{Elem, XML}
+import scalaz.{-\/, \/-}
 
 final class App extends unfiltered.filter.Plan {
 
@@ -23,7 +25,7 @@ final class App extends unfiltered.filter.Plan {
           App.NoCacheHeader ~> App.view(latest, label, classic)
         case init :+ "md" =>
           val n = init.mkString(".")
-          val base = s"http://javadoc-badge.appspot.com/$org/$n"
+          val base = s"${App.JAVADOC_BADGE_URL}$org/$n"
           val redirect = if(path == Nil) {
             base
           } else {
@@ -41,6 +43,21 @@ final class App extends unfiltered.filter.Plan {
               NotFound ~> ResponseString("not found")
           }
       }
+    case GET(Path(Seg(org :: Nil))) =>
+      MavenSearch.searchByGroupId(org) match {
+        case \/-(Nil) =>
+          App.returnHtml(<p>{"Not found groupId=" + org}</p>) ~> NotFound
+        case \/-(list) =>
+          App.returnHtml(
+            <div>{
+              list.map{ name =>
+                <li><a href={s"${App.JAVADOC_BADGE_URL}$org/${name}.md"}>{name}</a></li>
+              }
+            }</div>
+          )
+        case -\/(error) =>
+          App.returnHtml(<p>{error}</p>)
+      }
   }
 
 }
@@ -49,6 +66,8 @@ final case class SVG(nodes: scala.xml.NodeSeq) extends
   ComposeResponse(CharContentType("image/svg+xml") ~> ResponseString(nodes.toString))
 
 object App {
+  private val JAVADOC_BADGE_URL = "http://javadoc-badge.appspot.com/"
+
   private val NoCacheHeader = CacheControl("no-cache,no-store,must-revalidate,private") ~> Pragma("no-cache")
 
   private def javadocUrl(org: String, name: String, version: String, path: String): String =
@@ -156,5 +175,14 @@ object App {
         <text x="121.5" y="13">unknown</text>
       </g>
     </svg>
+
+  private def returnHtml(x: Elem) = Html5(
+    <html>
+      <head>
+        <meta name="robots" content="noindex,nofollow" />
+      </head>
+      <body><div>{x}</div></body>
+    </html>
+  )
 
 }
