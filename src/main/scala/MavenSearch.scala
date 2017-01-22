@@ -26,7 +26,7 @@ object MavenSearch{
     )
 
     Core.json[MavenSearch](req).interpret.map(
-      _.response.docs.filter(_.hasJavadocJar).map(_.artifactId).sorted
+      _.response.docs.withFilter(_.hasJavadocJar).map(_.artifactId).sorted
     )
   }
 
