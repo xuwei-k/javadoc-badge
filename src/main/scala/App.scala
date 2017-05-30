@@ -37,8 +37,25 @@ final class App extends unfiltered.filter.Plan {
         case _ =>
           App.latestVersion(baseUrl, org, name) match {
             case Some(version) =>
-              val p = if(path == Nil) "index.html" else path.mkString("/")
-              Redirect(App.javadocUrl(org, name, version, p))
+              val path0 = if(path == Nil) "index.html" else path.mkString("/")
+              val sonatypeURL = App.javadocUrl(org, name, version, path0, JavadocHost.Sonatype)
+              if(App.param(p, "javadocio").isDefined) {
+                val javadocIO = App.javadocUrl(org, name, version, path0, JavadocHost.JavadocIO)
+                val status = httpz.native.Http(javadocIO).asCodeHeaders._1
+                println(s"status = $status. $javadocIO")
+                if(status / 100 == 2) {
+                  Redirect(javadocIO)
+                } else {
+                  try {
+                    httpz.native.Http(s"https://javadoc.io/doc/${org}/${name}/${version}").asCodeHeaders
+                  } catch {
+                    case NonFatal(_) => // ignore
+                  }
+                  Redirect(sonatypeURL)
+                }
+              } else {
+                Redirect(sonatypeURL)
+              }
             case None =>
               NotFound ~> ResponseString("not found")
           }
@@ -70,8 +87,14 @@ object App {
 
   private val NoCacheHeader = CacheControl("no-cache,no-store,must-revalidate,private") ~> Pragma("no-cache")
 
-  private def javadocUrl(org: String, name: String, version: String, path: String): String =
-    s"https://oss.sonatype.org/service/local/repositories/releases/archive/${org.replace('.', '/')}/$name/$version/$name-$version-javadoc.jar/!/$path"
+  private def javadocUrl(org: String, name: String, version: String, path: String, host: JavadocHost): String = {
+    host match {
+      case JavadocHost.Sonatype =>
+        s"https://oss.sonatype.org/service/local/repositories/releases/archive/${org.replace('.', '/')}/$name/$version/$name-$version-javadoc.jar/!/$path"
+      case JavadocHost.JavadocIO =>
+        s"https://static.javadoc.io/${org}/${name}/${version}/$path"
+    }
+  }
 
   private def param(params: Params.Map, key: String): Option[String] =
     params.get(key).toList.flatten.find(_.trim.nonEmpty)
