@@ -12,8 +12,6 @@ libraryDependencies ++= (
   ("org.scalaz" %% "scalaz-concurrent" % "7.2.14") ::
   ("ws.unfiltered" %% "unfiltered-filter" % "0.9.1") ::
   ("javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided") ::
-  ("joda-time" % "joda-time" % "2.9.9") ::
-  ("org.joda" % "joda-convert" % "1.2") ::
   Nil
 )
 

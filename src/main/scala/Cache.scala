@@ -2,12 +2,12 @@ package javadoc_badge
 
 import java.util.{Map => JMap}
 import javadoc_badge.Cache.Entry
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 
 object Cache {
 
-  private final class Entry[A](val value: A, expiresAt: DateTime){
-    def expired(): Boolean = expiresAt.isBefore(DateTime.now)
+  private final class Entry[A](val value: A, expiresAt: LocalDateTime){
+    def expired(): Boolean = expiresAt.isBefore(LocalDateTime.now)
     def notExpired(): Boolean = ! expired
   }
 
@@ -36,8 +36,8 @@ final class Cache[A, B] private(underlying: JMap[A, Entry[B]]) {
     }
   }
 
-  def put(key: A, value: B, expire: DateTime): Boolean = {
-    if(expire.isAfter(DateTime.now())){
+  def put(key: A, value: B, expire: LocalDateTime): Boolean = {
+    if(expire.isAfter(LocalDateTime.now())){
       val entry = new Entry(value, expire)
       underlying.put(key, entry)
       true
@@ -46,7 +46,7 @@ final class Cache[A, B] private(underlying: JMap[A, Entry[B]]) {
     }
   }
 
-  def getOrElseUpdate(key: A, orElse: => Option[B], expire: DateTime): Option[B] = {
+  def getOrElseUpdate(key: A, orElse: => Option[B], expire: LocalDateTime): Option[B] = {
     get(key) match {
       case None =>
         orElse match {

@@ -1,6 +1,6 @@
 package javadoc_badge
 
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import unfiltered.request._
 import unfiltered.response._
 
@@ -113,7 +113,7 @@ object App {
 
   private def latestVersion(baseUrl: String, org: String, name: String): Option[String] = {
     val key = CacheKey(baseUrl, org, name)
-    cache.getOrElseUpdate(key, latestVersion0(baseUrl, org, name), DateTime.now.plusMinutes(10))
+    cache.getOrElseUpdate(key, latestVersion0(baseUrl, org, name), LocalDateTime.now.plusMinutes(10))
   }
 
   private[this] def latestVersion0(baseUrl: String, org: String, name: String): Option[String] =
