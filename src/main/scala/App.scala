@@ -83,7 +83,7 @@ final case class SVG(nodes: scala.xml.NodeSeq) extends
   ComposeResponse(CharContentType("image/svg+xml") ~> ResponseString(nodes.toString))
 
 object App {
-  private val JAVADOC_BADGE_URL = "http://javadoc-badge.appspot.com/"
+  private val JAVADOC_BADGE_URL = "https://javadoc-badge.appspot.com/"
 
   private val NoCacheHeader = CacheControl("no-cache,no-store,must-revalidate,private") ~> Pragma("no-cache")
 

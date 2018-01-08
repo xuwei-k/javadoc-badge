@@ -17,7 +17,7 @@ object MavenSearch{
     import httpz.native._
 
     val req = Request(
-      url = "http://search.maven.org/solrsearch/select",
+      url = "https://search.maven.org/solrsearch/select",
       params = Map(
         "q" -> s"g:$groupId",
         "rows" -> "256",

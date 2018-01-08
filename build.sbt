@@ -2,7 +2,7 @@ organization := "com.github.xuwei-k"
 
 name := "javadoc-badge"
 
-licenses += ("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php"))
+licenses += ("MIT License" -> url("https://www.opensource.org/licenses/mit-license.php"))
 
 scalaVersion := "2.12.4"
 
