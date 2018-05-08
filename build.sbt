@@ -4,7 +4,7 @@ name := "javadoc-badge"
 
 licenses += ("MIT License" -> url("https://www.opensource.org/licenses/mit-license.php"))
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.6"
 
 libraryDependencies ++= (
   ("com.github.xuwei-k" %% "httpz-native" % "0.5.1") ::
