@@ -15,11 +15,7 @@ libraryDependencies ++= (
   Nil
 )
 
-val unusedWarnings = (
-  "-Ywarn-unused" ::
-  "-Ywarn-unused-import" ::
-  Nil
-)
+val unusedWarnings = "-Ywarn-unused" :: Nil
 
 scalacOptions ++= (
   "-deprecation" ::
