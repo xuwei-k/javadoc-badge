@@ -17,7 +17,7 @@ final class App extends unfiltered.filter.Plan {
       )
     case GET(Path(Seg(org :: name :: path)) & Params(p)) =>
       val label = App.param(p, "label").getOrElse("javadoc")
-      val baseUrl = App.param(p, "base").getOrElse("https://oss.sonatype.org/content/repositories/releases/")
+      val baseUrl = App.param(p, "base").getOrElse("https://oss.sonatype.org/content/repositories/releases")
       name.split('.').toSeq match {
         case init :+ "svg" =>
           val classic = App.param(p, "style").map(_ == "classic").getOrElse(false)
