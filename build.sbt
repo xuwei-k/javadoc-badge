@@ -4,13 +4,13 @@ name := "javadoc-badge"
 
 licenses += ("MIT License" -> url("https://www.opensource.org/licenses/mit-license.php"))
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.13.0"
 
 libraryDependencies ++= (
-  ("com.github.xuwei-k" %% "httpz-native" % "0.5.1") ::
+  ("com.github.xuwei-k" %% "httpz-native" % "0.6.0") ::
   ("io.argonaut" %% "argonaut-scalaz" % "6.2.3") ::
-  ("org.scalaz" %% "scalaz-concurrent" % "7.2.27") ::
-  ("ws.unfiltered" %% "unfiltered-filter" % "0.9.1") ::
+  ("org.scalaz" %% "scalaz-concurrent" % "7.2.28") ::
+  ("ws.unfiltered" %% "unfiltered-filter" % "0.10.0-M4") ::
   ("javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided") ::
   Nil
 )
