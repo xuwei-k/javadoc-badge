@@ -1,7 +1,5 @@
 # Javadoc Badge
 
-[![Build Status](https://travis-ci.com/xuwei-k/javadoc-badge.svg?branch=master)](https://travis-ci.com/xuwei-k/javadoc-badge)
-
 like <https://github.com/jirutka/maven-badges> but for javadoc (or any other jvm doc)
 
 Usage
